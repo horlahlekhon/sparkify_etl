@@ -9,35 +9,50 @@ time_table_drop = """DROP TABLE IF EXISTS time"""
 # CREATE TABLES
 
 user_table_create = ("""
-    CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY ,
-                                    first_name VARCHAR, 
-                                        last_name VARCHAR, gender VARCHAR,
-                                         level VARCHAR)
+    CREATE TABLE IF NOT EXISTS users (
+        user_id INTEGER PRIMARY KEY ,
+        first_name VARCHAR, 
+        last_name VARCHAR, gender VARCHAR,
+        level VARCHAR
+        )
 """)
 
 artist_table_create = ("""
-    CREATE TABLE IF NOT EXISTS artists (artist_id VARCHAR PRIMARY KEY , name VARCHAR, location VARCHAR,
-                                        latitude DOUBLE PRECISION, longitude DOUBLE PRECISION
-                                         )
+    CREATE TABLE IF NOT EXISTS artists (
+        artist_id VARCHAR PRIMARY KEY, 
+        name VARCHAR, location VARCHAR,
+        latitude DOUBLE PRECISION,
+        longitude DOUBLE PRECISION
+        )
 """)
 
 song_table_create = ("""
-    CREATE TABLE IF NOT EXISTS songs (song_id SERIAL PRIMARY KEY ,
-                                    title VARCHAR, artist_id VARCHAR, year INTEGER, duration DOUBLE PRECISION,
-                                    CONSTRAINT fk_artist_id
-                                        FOREIGN KEY(artist_id) REFERENCES artists(artist_id) ON DELETE SET NULL
-                                        )
+    CREATE TABLE IF NOT EXISTS songs (
+        song_id SERIAL PRIMARY KEY ,
+        title VARCHAR, artist_id VARCHAR, year INTEGER, duration DOUBLE PRECISION,
+        CONSTRAINT fk_artist_id
+        FOREIGN KEY(artist_id)
+        REFERENCES artists(artist_id) ON DELETE SET NULL
+        )
 """)
 
 time_table_create = ("""
-        CREATE TABLE IF NOT EXISTS time (start_time TIMESTAMP WITHOUT TIME ZONE, hour INTEGER,
-         day INTEGER, week INTEGER, month INTEGER, year INTEGER, weekday INTEGER)
+        CREATE TABLE IF NOT EXISTS time (
+            start_time TIMESTAMP WITHOUT TIME ZONE,
+            hour INTEGER,
+            day INTEGER,
+            week INTEGER,
+            month INTEGER,
+            year INTEGER,
+            weekday INTEGER
+            )
 """)
 
 # INSERT RECORDS
 
 songplay_table_insert = ("""
-    INSERT INTO songplays(start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
+    INSERT INTO songplays(
+    start_time, user_id, level, song_id, artist_id, session_id, location, user_agent)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT DO NOTHING 
 """)
@@ -45,7 +60,7 @@ songplay_table_insert = ("""
 user_table_insert = ("""
     INSERT INTO users(user_id, first_name, last_name, gender, level)
         VALUES (%s, %s, %s, %s, %s)
-        ON CONFLICT DO NOTHING 
+        ON CONFLICT (user_id) DO UPDATE SET  level = EXCLUDED.level 
 """)
 
 song_table_insert = ("""
@@ -75,15 +90,21 @@ song_select = ("""
 """)
 
 songplay_table_create = ("""
-    CREATE TABLE IF NOT EXISTS songplays (songplay_id SERIAL PRIMARY KEY , 
-                                            start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL, user_id INTEGER NOT NULL ,
-                                            level VARCHAR, song_id INTEGER DEFAULT NULL, artist_id VARCHAR DEFAULT NULL,
-                                            session_id INTEGER, location VARCHAR, user_agent VARCHAR,
-                                            CONSTRAINT fk_song_id
-                                                FOREIGN KEY(song_id) REFERENCES songs(song_id) ON DELETE SET NULL,
-                                            CONSTRAINT fk_artist_id
-                                                FOREIGN KEY (artist_id) REFERENCES artists(artist_id) ON DELETE SET NULL 
-                                            )
+    CREATE TABLE IF NOT EXISTS songplays (
+        songplay_id SERIAL PRIMARY KEY , 
+        start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+        user_id INTEGER NOT NULL,
+        level VARCHAR,
+        song_id INTEGER DEFAULT NULL,
+        artist_id VARCHAR DEFAULT NULL,
+        session_id INTEGER,
+        location VARCHAR,
+        user_agent VARCHAR,
+        CONSTRAINT fk_song_id
+            FOREIGN KEY(song_id) REFERENCES songs(song_id) ON DELETE SET NULL,
+        CONSTRAINT fk_artist_id
+            FOREIGN KEY (artist_id) REFERENCES artists(artist_id) ON DELETE SET NULL 
+        )
 """)
 
 # QUERY LISTS
